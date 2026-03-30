@@ -6,7 +6,7 @@ import { useImageUploadMutation, useDeleteProductImageMutation } from "@/redux/a
 import GraySpinner from "@/components/common/GraySpinner";
 
 interface VariantForm {
-  size: "12ml" | "20ml" | "30ml" | "50ml" | "100ml" | "150ml" | "50g" | "100g" | "200g" | "500g" | "1kg";
+  size: "12ml" | "20ml" | "30ml" | "50ml" | "100ml" | "150ml" | "200ml" | "500ml" | "1ltr" | "2ltr" | "50g" | "100g" | "200g" | "500g" | "1kg";
   price: number;
   discountPrice: number | null;
   imageUrls?: string[] | null;
@@ -238,6 +238,10 @@ const VariantModal: React.FC<VariantModalProps> = ({
             <option value="50ml">50ml</option>
             <option value="100ml">100ml</option>
             <option value="150ml">150ml</option>
+            <option value="200ml">200ml</option>
+            <option value="500ml">500ml</option>
+            <option value="1ltr">1ltr</option>
+            <option value="2ltr">2ltr</option>
             <option value="50g">50g</option>
             <option value="100g">100g</option>
             <option value="200g">200g</option>

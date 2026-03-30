@@ -48,7 +48,7 @@ const ProductSchema = new Schema(
         size: {
           type: String,
           required: true,
-          enum: ["12ml", "20ml", "30ml", "50ml", "100ml", "150ml", "50g", "100g", "200g", "500g", "1kg"], // Restrict to common sizes
+          enum: ["12ml", "20ml", "30ml", "50ml", "100ml", "150ml", "200ml", "500ml", "1ltr", "2ltr", "50g", "100g", "200g", "500g", "1kg"], // Restrict to common sizes
         },
         price: {
           type: Number,
