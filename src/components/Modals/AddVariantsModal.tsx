@@ -9,7 +9,7 @@ interface VariantForm {
   size: "12ml" | "20ml" | "30ml" | "50ml" | "100ml" | "150ml" | "200ml" | "500ml" | "1ltr" | "2ltr" | "50g" | "100g" | "200g" | "500g" | "1kg";
   price: number;
   discountPrice: number | null;
-  imageUrl?: string[] | null;
+  imageUrl?: string[];
   imageFiles?: File[] | null;
   imageId?: string[] | null; // Added to track image IDs
 }
