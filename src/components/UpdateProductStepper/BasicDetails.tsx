@@ -16,6 +16,7 @@ interface VariantForm {
   size: "12ml" | "20ml" | "30ml" | "50ml" | "100ml" | "150ml" | "200ml" | "500ml" | "1ltr" | "2ltr" | "50g" | "100g" | "200g" | "500g" | "1kg";
   price: number;
   discountPrice: number | null;
+  imageUrl?: string[] | null;
 }
 
 const BasicDetails: React.FC<BasicDetailsProps> = ({
@@ -29,6 +30,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
     size: "12ml",
     price: 0,
     discountPrice: null,
+    imageUrl: [],
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -59,6 +61,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
         size: variant.size as any,
         price: variant.price,
         discountPrice: variant.discountPrice,
+        imageUrl: variant.imageUrl || [],
       });
       setEditIndex(index);
     } else {
@@ -71,7 +74,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
   const closeModal = () => {
     setIsModalOpen(false);
     setEditIndex(null);
-    setVariantForm({ size: "12ml", price: 0, discountPrice: null });
+    setVariantForm({ size: "12ml", price: 0, discountPrice: null, imageUrl: [] });
   };
 
   const saveVariant = (variantData?: VariantForm) => {
@@ -117,12 +120,10 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
     if (editIndex !== null) {
       updatedVariants[editIndex] = {
         ...dataToSave,
-        imageUrl: updatedVariants[editIndex].imageUrl || [] // Preserve existing images if any (though we are hiding upload)
       };
     } else {
       updatedVariants.push({
         ...dataToSave,
-        imageUrl: []
       });
     }
 

@@ -9,9 +9,9 @@ interface VariantForm {
   size: "12ml" | "20ml" | "30ml" | "50ml" | "100ml" | "150ml" | "200ml" | "500ml" | "1ltr" | "2ltr" | "50g" | "100g" | "200g" | "500g" | "1kg";
   price: number;
   discountPrice: number | null;
-  imageUrls?: string[] | null;
+  imageUrl?: string[] | null;
   imageFiles?: File[] | null;
-  imageIds?: string[] | null; // Added to track image IDs
+  imageId?: string[] | null; // Added to track image IDs
 }
 
 interface VariantModalProps {
@@ -37,13 +37,13 @@ const VariantModal: React.FC<VariantModalProps> = ({
   // Cleanup preview URLs to prevent memory leaks
   useEffect(() => {
     return () => {
-      if (variantForm.imageUrls) {
-        variantForm.imageUrls.forEach((url) => {
+      if (variantForm.imageUrl) {
+        variantForm.imageUrl.forEach((url) => {
           if (url.startsWith("blob:")) URL.revokeObjectURL(url);
         });
       }
     };
-  }, [variantForm.imageUrls]);
+  }, [variantForm.imageUrl]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -60,8 +60,8 @@ const VariantModal: React.FC<VariantModalProps> = ({
     if (newFiles.length === 0) return;
 
     const existingFiles = variantForm.imageFiles || [];
-    const existingUrls = variantForm.imageUrls || [];
-    const existingIds = variantForm.imageIds || [];
+    const existingUrls = variantForm.imageUrl || [];
+    const existingIds = variantForm.imageId || [];
 
     // Filter out blob URLs from existingUrls to avoid duplicating previews
     const persistentUrls = existingUrls.filter((url) => !url.startsWith("blob:"));
@@ -76,8 +76,8 @@ const VariantModal: React.FC<VariantModalProps> = ({
     setVariantForm({
       ...variantForm,
       imageFiles: mergedFiles,
-      imageUrls: mergedUrls,
-      imageIds: mergedIds,
+      imageUrl: mergedUrls,
+      imageId: mergedIds,
     });
   };
 
@@ -97,20 +97,20 @@ const VariantModal: React.FC<VariantModalProps> = ({
       }
 
       // Remove from local state
-      const updatedUrls = (variantForm.imageUrls || []).filter((_, i) => i !== index);
+      const updatedUrls = (variantForm.imageUrl || []).filter((_, i) => i !== index);
       const updatedFiles = (variantForm.imageFiles || []).filter((_, i) => i !== index);
-      const updatedIds = (variantForm.imageIds || []).filter((_, i) => i !== index);
+      const updatedIds = (variantForm.imageId || []).filter((_, i) => i !== index);
 
       // Revoke blob URL if it exists
-      if (variantForm.imageUrls?.[index]?.startsWith("blob:")) {
-        URL.revokeObjectURL(variantForm.imageUrls[index]);
+      if (variantForm.imageUrl?.[index]?.startsWith("blob:")) {
+        URL.revokeObjectURL(variantForm.imageUrl[index]);
       }
 
       setVariantForm({
         ...variantForm,
-        imageUrls: updatedUrls,
+        imageUrl: updatedUrls,
         imageFiles: updatedFiles,
-        imageIds: updatedIds,
+        imageId: updatedIds,
       });
     } catch (error) {
       console.error("Error deleting image:", error);
@@ -175,7 +175,7 @@ const VariantModal: React.FC<VariantModalProps> = ({
               throw new Error(`Image upload failed for ${file.name}`);
             }
 
-            return { finalUrl: uploadResult.finalUrl, imageId: uploadResult.imageId || "" };
+            return { finalUrl: uploadResult.finalUrl, imageId: uploadResult.fileKey || "" };
           })
         );
 
@@ -193,18 +193,18 @@ const VariantModal: React.FC<VariantModalProps> = ({
     }
 
     // Combine existing uploaded URLs with new ones, excluding blob URLs
-    const existingUrls = (variantForm.imageUrls || []).filter((url) => !url.startsWith("blob:"));
-    const existingIds = variantForm.imageIds || [];
+    const existingUrls = (variantForm.imageUrl || []).filter((url) => !url.startsWith("blob:"));
+    const existingIds = variantForm.imageId || [];
     const updatedVariantForm = {
       ...variantForm,
-      imageUrls: [...existingUrls, ...uploadedImageUrls].slice(0, 5),
-      imageIds: [...existingIds, ...uploadedImageIds].slice(0, 5),
+      imageUrl: [...existingUrls, ...uploadedImageUrls].slice(0, 5),
+      imageId: [...existingIds, ...uploadedImageIds].slice(0, 5),
       imageFiles: null,
     };
 
     // Revoke blob URLs
-    if (variantForm.imageUrls) {
-      variantForm.imageUrls.forEach((url) => {
+    if (variantForm.imageUrl) {
+      variantForm.imageUrl.forEach((url) => {
         if (url.startsWith("blob:")) URL.revokeObjectURL(url);
       });
     }
@@ -291,14 +291,14 @@ const VariantModal: React.FC<VariantModalProps> = ({
             multiple
             onChange={handleFileChange}
           />
-          {variantForm.imageUrls && variantForm.imageUrls.length > 0 && (
+          {variantForm.imageUrl && variantForm.imageUrl.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
-              {variantForm.imageUrls.map((url, index) => (
+              {variantForm.imageUrl.map((url, index) => (
                 <div className="relative w-fit" key={index}>
                   <button
                     type="button"
-                    onClick={() => handleDelete(index, variantForm.imageIds?.[index])}
-                    disabled={isDeleting || variantForm.imageUrls!.length <= 1}
+                    onClick={() => handleDelete(index, variantForm.imageId?.[index])}
+                    disabled={isDeleting || variantForm.imageUrl!.length <= 1}
                     className="badge badge-error badge-sm absolute right-0 top-0 z-30 h-auto rounded-full !p-1"
                   >
                     {isDeleting ? <GraySpinner /> : "✖"}

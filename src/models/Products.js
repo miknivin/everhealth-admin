@@ -64,6 +64,10 @@ const ProductSchema = new Schema(
           type: [{ type: String }],
           default: [],
         },
+        imageId: {
+          type: [{ type: String }],
+          default: [],
+        },
       },
     ],
     stockQuantity: {

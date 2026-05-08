@@ -16,6 +16,7 @@ interface VariantForm {
   size: "12ml" | "20ml" | "30ml" | "50ml" | "100ml" | "150ml" | "200ml" | "500ml" | "1ltr" | "2ltr" | "50g" | "100g" | "200g" | "500g" | "1kg";
   price: number;
   discountPrice: number | null;
+  imageUrl?: string[] | null;
 }
 
 const BasicDetails: React.FC<BasicDetailsProps> = ({
@@ -29,6 +30,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
     size: "12ml",
     price: 0,
     discountPrice: null,
+    imageUrl: [],
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
@@ -59,9 +61,10 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
     if (index !== undefined) {
       const variant = productState.variants[index];
       setVariantForm({
-        size: variant.size,
+        size: variant.size as any,
         price: variant.price,
         discountPrice: variant.discountPrice,
+        imageUrl: variant.imageUrl || [],
       });
       setEditIndex(index);
     } else {
@@ -74,10 +77,11 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
   const closeModal = () => {
     setIsModalOpen(false);
     setEditIndex(null);
-    setVariantForm({ size: "12ml", price: 0, discountPrice: null });
+    setVariantForm({ size: "12ml", price: 0, discountPrice: null, imageUrl: [] });
   };
 
-  const saveVariant = () => {
+  const saveVariant = (variantData?: VariantForm) => {
+    const dataToSave = variantData || variantForm;
     const errors: string[] = [];
     if (!variantForm.size) {
       errors.push("Size is required.");
@@ -91,7 +95,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
     if (
       productState.variants.some(
         (v, i) =>
-          v.size === variantForm.size &&
+          v.size === dataToSave.size &&
           (editIndex === null || i !== editIndex),
       )
     ) {
@@ -109,9 +113,9 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
 
     const updatedVariants = [...productState.variants];
     if (editIndex !== null) {
-      updatedVariants[editIndex] = variantForm;
+      updatedVariants[editIndex] = dataToSave;
     } else {
-      updatedVariants.push(variantForm);
+      updatedVariants.push(dataToSave);
     }
 
     const updatedProduct = { ...productState, variants: updatedVariants };
