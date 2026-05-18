@@ -44,10 +44,8 @@ const OrderHeader: React.FC<OrderHeaderProps> = ({
     }
   };
 
-  // Determine if we should show the RadioDropDown
-  const showRadioDropdown =
-    orderStatus === "Cancelled" || // ← NEW: Always show for Cancelled orders
-    (!delhiveryStatus && !delhiveryError); // Original condition: no Delhivery status
+  // Always show the RadioDropDown so the admin can manually update order status at any time
+  const showRadioDropdown = true;
 
   return (
     <div className="flex justify-between">
