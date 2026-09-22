@@ -7,6 +7,7 @@ const sendToken = (user, statusCode) => {
     httpOnly: true,
     maxAge: process.env.COOKIE_EXPIRES_TIME * 24 * 60 * 60, // in seconds
     path: "/",
+    sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   };
   //console.log("token miss prank");
@@ -20,6 +21,7 @@ const sendToken = (user, statusCode) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     },
     { status: statusCode },

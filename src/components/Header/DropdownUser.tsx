@@ -1,27 +1,29 @@
-"use client;";
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
 import { useDispatch, useSelector } from "react-redux";
-import { useLazyLogoutQuery } from "@/redux/api/authApi";
-import { setUser, setIsAuthenticated } from "@/redux/features/userSlice";
+import { useLogoutMutation } from "@/redux/api/authApi";
+import { logoutAction } from "@/redux/features/userSlice";
+import { useRouter } from "next/navigation";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [triggerLogout] = useLazyLogoutQuery();
+  const [logout, { isLoading }] = useLogoutMutation();
   const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      await triggerLogout(null).unwrap();
+      setDropdownOpen(false);
+      await logout(null).unwrap();
     } catch (error) {
       console.error("Logout error:", error);
+      dispatch(logoutAction());
     } finally {
-      dispatch(setUser(null));
-      dispatch(setIsAuthenticated(false));
-      window.location.href = "/";
+      router.push("/");
     }
   };
   return (

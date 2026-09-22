@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userApi } from "./userApi";
+import { setUser, setIsAuthenticated, setLoading, logoutAction } from "../features/userSlice";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -52,15 +53,33 @@ export const authApi = createApi({
       },
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled;
+          const { data } = await queryFulfilled;
+          if (data?.user) {
+            dispatch(setUser(data.user));
+            dispatch(setIsAuthenticated(true));
+          }
           await dispatch(userApi.endpoints.getMe.initiate(null, { forceRefetch: true }));
         } catch (error) {
           console.log(error);
         }
       },
     }),
-    logout: builder.query({
-      query: () => "auth/logout",
+    logout: builder.mutation({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          console.error("Logout request failed:", error);
+        } finally {
+          dispatch(logoutAction());
+          dispatch(authApi.util.resetApiState());
+          dispatch(userApi.util.resetApiState());
+        }
+      },
     }),
   }),
 });
@@ -68,6 +87,10 @@ export const authApi = createApi({
 export const {
   useLoginMutation,
   useRegisterMutation,
-  useLazyLogoutQuery,
+  useLogoutMutation,
   useGoogleSignInMutation,
 } = authApi;
+
+// Backwards compatibility alias
+export const useLazyLogoutQuery = useLogoutMutation;
+
