@@ -53,7 +53,7 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          await dispatch(userApi.endpoints.getMe.initiate(null));
+          await dispatch(userApi.endpoints.getMe.initiate(null, { forceRefetch: true }));
         } catch (error) {
           console.log(error);
         }

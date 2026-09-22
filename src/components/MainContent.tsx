@@ -16,7 +16,7 @@ export default function MainContent({
 }: {
   children: React.ReactNode;
 }) {
-  const { isLoading } = useGetMeQuery({});
+  const { isLoading } = useGetMeQuery(null);
   const { isAuthenticated } = useSelector((state: any) => state.auth);
 
   if (isLoading) {
